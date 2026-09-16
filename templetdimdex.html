@@ -1,0 +1,710 @@
+from flask import Flask, request, redirect
+import urllib.parse
+
+app = Flask(__name__)
+
+PHONE = "201034859496"
+
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+
+    if request.method == "POST":
+
+        name = request.form.get("name", "").strip()
+        service = request.form.get("service", "").strip()
+        budget = request.form.get("budget", "").strip()
+        details = request.form.get("details", "").strip()
+
+        message = (
+            "مرحباً Webnex 👋\n\n"
+            "أريد طلب مشروع جديد.\n\n"
+            f"الاسم: {name}\n"
+            f"الخدمة: {service}\n"
+            f"الميزانية: {budget}\n\n"
+            "تفاصيل المشروع:\n"
+            f"{details}"
+        )
+
+        whatsapp_url = (
+            "https://wa.me/"
+            + PHONE
+            + "?text="
+            + urllib.parse.quote(message)
+        )
+
+        return redirect(whatsapp_url)
+
+    return """
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Webnex | Digital Solutions</title>
+
+<meta name="description"
+      content="Webnex لتصميم وتطوير المواقع الإلكترونية.">
+
+<style>
+
+/* =========================
+   RESET
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Tahoma, sans-serif;
+    background: #050810;
+    color: #ffffff;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+
+/* =========================
+   CONTAINER
+========================= */
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+
+/* =========================
+   NAVBAR
+========================= */
+
+nav {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 75px;
+    padding: 0 5%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: rgba(5, 8, 16, 0.92);
+    backdrop-filter: blur(15px);
+
+    border-bottom: 1px solid #17263a;
+
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 30px;
+    font-weight: 800;
+}
+
+.logo span {
+    color: #1597ff;
+}
+
+.links {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.links a {
+    color: #aeb9c8;
+    transition: 0.3s;
+}
+
+.links a:hover {
+    color: #1597ff;
+}
+
+.nav-button {
+    background: #1597ff;
+    color: #ffffff !important;
+    padding: 11px 18px;
+    border-radius: 10px;
+}
+
+.menu {
+    display: none;
+
+    background: #0c1725;
+    color: white;
+
+    border: 1px solid #26384e;
+    border-radius: 10px;
+
+    padding: 9px 13px;
+
+    font-size: 21px;
+    cursor: pointer;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+    min-height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 130px 20px 80px;
+
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(21, 151, 255, 0.28),
+            transparent 45%
+        );
+}
+
+.hero-content {
+    max-width: 900px;
+}
+
+.badge {
+    display: inline-block;
+
+    padding: 10px 18px;
+    margin-bottom: 25px;
+
+    border: 1px solid #1597ff;
+    border-radius: 50px;
+
+    color: #62c3ff;
+    background: rgba(21, 151, 255, 0.08);
+
+    font-size: 13px;
+}
+
+.hero h1 {
+    font-size: clamp(45px, 7vw, 80px);
+    line-height: 1.1;
+
+    margin-bottom: 25px;
+}
+
+.blue {
+    color: #1597ff;
+}
+
+.hero p {
+    max-width: 760px;
+    margin: auto;
+    margin-bottom: 35px;
+
+    color: #9daabd;
+
+    font-size: 18px;
+    line-height: 1.9;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-block;
+
+    padding: 15px 28px;
+
+    border-radius: 12px;
+
+    background: #1597ff;
+    border: 1px solid #1597ff;
+
+    color: white;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.btn:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 15px 35px rgba(21, 151, 255, 0.25);
+}
+
+.secondary {
+    background: #0d1724;
+    border-color: #26384e;
+}
+
+
+/* =========================
+   STATS
+========================= */
+
+.stats {
+    display: flex;
+    justify-content: center;
+
+    gap: 55px;
+
+    margin-top: 55px;
+
+    flex-wrap: wrap;
+}
+
+.stat strong {
+    display: block;
+
+    font-size: 25px;
+
+    margin-bottom: 6px;
+}
+
+.stat span {
+    color: #718096;
+    font-size: 13px;
+}
+
+
+/* =========================
+   SECTIONS
+========================= */
+
+section {
+    padding: 100px 0;
+}
+
+.dark-section {
+    background: #070d16;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 55px;
+}
+
+.section-title small {
+    display: block;
+
+    color: #1597ff;
+
+    margin-bottom: 12px;
+
+    letter-spacing: 2px;
+}
+
+.section-title h2 {
+    font-size: 45px;
+    margin-bottom: 15px;
+}
+
+.section-title p {
+    max-width: 650px;
+
+    margin: auto;
+
+    color: #8997a8;
+
+    line-height: 1.8;
+}
+
+
+/* =========================
+   SERVICES
+========================= */
+
+.cards {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 22px;
+}
+
+.card {
+    padding: 30px;
+
+    background: #0b1521;
+
+    border: 1px solid #1b2c40;
+
+    border-radius: 20px;
+
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+
+    border-color: #1597ff;
+}
+
+.icon {
+    width: 60px;
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 20px;
+
+    border-radius: 15px;
+
+    background: rgba(21, 151, 255, 0.1);
+
+    font-size: 30px;
+}
+
+.card h3 {
+    font-size: 22px;
+    margin-bottom: 12px;
+}
+
+.card p {
+    color: #8997a8;
+    line-height: 1.8;
+}
+
+
+/* =========================
+   PROCESS
+========================= */
+
+.process {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+}
+
+.process-card {
+    padding: 25px;
+
+    text-align: center;
+
+    background: #0b1521;
+
+    border: 1px solid #1b2c40;
+
+    border-radius: 18px;
+}
+
+.number {
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 0 auto 18px;
+
+    border-radius: 50%;
+
+    background: #1597ff;
+
+    font-weight: bold;
+}
+
+.process-card p {
+    margin-top: 10px;
+
+    color: #8997a8;
+
+    line-height: 1.7;
+}
+
+
+/* =========================
+   PRICING
+========================= */
+
+.pricing {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 22px;
+}
+
+.price-card {
+    padding: 32px;
+
+    background: #0b1521;
+
+    border: 1px solid #1b2c40;
+
+    border-radius: 20px;
+
+    transition: 0.3s;
+}
+
+.price-card:hover {
+    transform: translateY(-6px);
+}
+
+.price-card.featured {
+    border-color: #1597ff;
+
+    box-shadow:
+        0 20px 50px rgba(21, 151, 255, 0.12);
+}
+
+.price-card h3 {
+    font-size: 23px;
+    margin-bottom: 15px;
+}
+
+.price {
+    font-size: 38px;
+    font-weight: bold;
+
+    margin-bottom: 25px;
+}
+
+.price span {
+    font-size: 14px;
+    color: #78869a;
+}
+
+.price-card ul {
+    list-style: none;
+
+    margin-bottom: 25px;
+}
+
+.price-card li {
+    padding: 10px 0;
+
+    color: #9aa7b7;
+
+    border-bottom: 1px solid #172434;
+}
+
+.price-card li::before {
+    content: "✓";
+
+    color: #20c979;
+
+    margin-left: 8px;
+}
+
+.full {
+    width: 100%;
+    text-align: center;
+}
+
+
+/* =========================
+   PORTFOLIO
+========================= */
+
+.portfolio {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 22px;
+}
+
+.project {
+    position: relative;
+
+    min-height: 300px;
+
+    padding: 30px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: flex-end;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    border: 1px solid #1b2c40;
+
+    cursor: pointer;
+
+    transition: 0.3s;
+}
+
+.project:hover {
+    transform: translateY(-7px);
+
+    border-color: #1597ff;
+}
+
+.project::before {
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(21, 151, 255, 0.35),
+            transparent 45%
+        );
+}
+
+.project-content {
+    position: relative;
+    z-index: 2;
+}
+
+.project-icon {
+    font-size: 55px;
+
+    margin-bottom: 20px;
+}
+
+.project small {
+    color: #62c3ff;
+
+    margin-bottom: 8px;
+}
+
+.project h3 {
+    font-size: 27px;
+
+    margin-bottom: 8px;
+}
+
+.project p {
+    color: #aab5c3;
+
+    margin-bottom: 18px;
+}
+
+.project-link {
+    display: inline-block;
+
+    color: #1597ff;
+
+    font-weight: bold;
+}
+
+
+/* =========================
+   WHY
+========================= */
+
+.why {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 22px;
+}
+
+.why-card {
+    padding: 28px;
+
+    background: #0b1521;
+
+    border: 1px solid #1b2c40;
+
+    border-radius: 18px;
+}
+
+.why-card h3 {
+    margin-bottom: 12px;
+}
+
+.why-card p {
+    color: #8997a8;
+
+    line-height: 1.8;
+}
+
+
+/* =========================
+   CONTACT
+========================= */
+
+.contact-area {
+    display: grid;
+
+    grid-template-columns:
+        1fr 1.2fr;
+
+    gap: 25px;
+}
+
+.contact-box {
+    padding: 30px;
+
+    background: #0b1521;
+
+    border: 1px solid #1b2c40;
+
+    border-radius: 20px;
+}
+
+.contact-box h3 {
+    font-size: 28px;
+
+    margin-bottom: 15px;
+}
+
+.contact-box > p {
+    color: #8997a8;
+
+    line-height: 1.8;
+
+    margin-bottom: 25px;
+}
+
+.contact-item {
+    padding: 16px;
+
+    margin-top: 12px;
+
+    background: #0e
