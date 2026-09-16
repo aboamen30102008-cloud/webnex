@@ -1,935 +1,744 @@
-from flask import Flask, request, redirect
-import urllib.parse
-
-app = Flask(__name__)
-
-# =========================
-# YOUR CONTACT
-# =========================
-
-PHONE = "201034859496"
-DISPLAY_PHONE = "01034859496"
-
-# =========================
-# WHATSAPP
-# =========================
-
-def whatsapp_link(message):
-    return (
-        "https://wa.me/"
-        + PHONE
-        + "?text="
-        + urllib.parse.quote(message)
-    )
-
-
-# =========================
-# HOME
-# =========================
-
-@app.route("/", methods=["GET", "POST"])
-def home():
-
-    if request.method == "POST":
-
-        name = request.form.get("name", "").strip()
-        service = request.form.get("service", "").strip()
-        budget = request.form.get("budget", "").strip()
-        payment = request.form.get("payment", "").strip()
-        details = request.form.get("details", "").strip()
-
-        message = (
-            "مرحباً Webnex 👋\n\n"
-            "أريد طلب خدمة جديدة.\n\n"
-            f"الاسم: {name}\n"
-            f"الخدمة: {service}\n"
-            f"الميزانية: {budget}\n"
-            f"طريقة الدفع: {payment}\n\n"
-            "تفاصيل الطلب:\n"
-            f"{details}"
-        )
-
-        return redirect(whatsapp_link(message))
-
-    return """
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<meta name="description"
-      content="Webnex - تصميم وتطوير المواقع والحلول الرقمية">
-
-<title>Webnex | Digital Solutions</title>
-
-<style>
-
-/* =========================
-   RESET
-========================= */
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    font-family: Arial, Tahoma, sans-serif;
-    background: #050810;
-    color: #ffffff;
-    overflow-x: hidden;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-button,
-input,
-select,
-textarea {
-    font-family: inherit;
-}
-
-
-/* =========================
-   GLOBAL
-========================= */
-
-.container {
-    width: 90%;
-    max-width: 1200px;
-    margin: auto;
-}
-
-.blue {
-    color: #1597ff;
-}
-
-section {
-    padding: 100px 0;
-}
-
-.dark-section {
-    background: #070d16;
-}
-
-
-/* =========================
-   NAVBAR
-========================= */
-
-nav {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 100%;
-    height: 75px;
-
-    padding: 0 5%;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    background: rgba(5, 8, 16, 0.94);
-    backdrop-filter: blur(15px);
-
-    border-bottom: 1px solid #17263a;
-
-    z-index: 1000;
-}
-
-.logo {
-    font-size: 30px;
-    font-weight: 900;
-}
-
-.logo span {
-    color: #1597ff;
-}
-
-.links {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-}
-
-.links a {
-    color: #aeb9c8;
-    transition: 0.3s;
-}
-
-.links a:hover {
-    color: #1597ff;
-}
-
-.nav-button {
-    background: #1597ff;
-    color: white !important;
-
-    padding: 11px 18px;
-    border-radius: 10px;
-}
-
-.menu {
-    display: none;
-
-    background: #0c1725;
-    color: white;
-
-    border: 1px solid #26384e;
-    border-radius: 10px;
-
-    padding: 9px 13px;
-
-    font-size: 21px;
-
-    cursor: pointer;
-}
-
-
-/* =========================
-   HERO
-========================= */
-
-.hero {
-    min-height: 100vh;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    text-align: center;
-
-    padding: 130px 20px 80px;
-
-    background:
-        radial-gradient(
-            circle at 50% 0%,
-            rgba(21,151,255,0.28),
-            transparent 45%
-        );
-}
-
-.hero-content {
-    max-width: 900px;
-}
-
-.badge {
-    display: inline-block;
-
-    padding: 10px 18px;
-    margin-bottom: 25px;
-
-    border: 1px solid #1597ff;
-    border-radius: 50px;
-
-    color: #62c3ff;
-
-    background: rgba(21,151,255,0.08);
-
-    font-size: 13px;
-}
-
-.hero h1 {
-    font-size: clamp(45px, 7vw, 80px);
-
-    line-height: 1.1;
-
-    margin-bottom: 25px;
-}
-
-.hero p {
-    max-width: 760px;
-
-    margin: auto;
-    margin-bottom: 35px;
-
-    color: #9daabd;
-
-    font-size: 18px;
-    line-height: 1.9;
-}
-
-.buttons {
-    display: flex;
-
-    justify-content: center;
-
-    gap: 15px;
-
-    flex-wrap: wrap;
-}
-
-.btn {
-    display: inline-block;
-
-    padding: 15px 28px;
-
-    border-radius: 12px;
-
-    background: #1597ff;
-
-    border: 1px solid #1597ff;
-
-    color: white;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    transition: 0.3s;
-}
-
-.btn:hover {
-    transform: translateY(-4px);
-
-    box-shadow:
-        0 15px 35px rgba(21,151,255,0.25);
-}
-
-.secondary {
-    background: #0d1724;
-
-    border-color: #26384e;
-}
-
-
-/* =========================
-   STATS
-========================= */
-
-.stats {
-    display: flex;
-
-    justify-content: center;
-
-    gap: 55px;
-
-    margin-top: 55px;
-
-    flex-wrap: wrap;
-}
-
-.stat {
-    text-align: center;
-}
-
-.stat strong {
-    display: block;
-
-    font-size: 25px;
-
-    margin-bottom: 6px;
-}
-
-.stat span {
-    color: #718096;
-
-    font-size: 13px;
-}
-
-
-/* =========================
-   TITLES
-========================= */
-
-.section-title {
-    text-align: center;
-
-    margin-bottom: 55px;
-}
-
-.section-title small {
-    display: block;
-
-    color: #1597ff;
-
-    margin-bottom: 12px;
-
-    letter-spacing: 2px;
-}
-
-.section-title h2 {
-    font-size: 45px;
-
-    margin-bottom: 15px;
-}
-
-.section-title p {
-    max-width: 650px;
-
-    margin: auto;
-
-    color: #8997a8;
-
-    line-height: 1.8;
-}
-
-
-/* =========================
-   SERVICES
-========================= */
-
-.cards {
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 22px;
-}
-
-.card {
-    padding: 30px;
-
-    background: #0b1521;
-
-    border: 1px solid #1b2c40;
-
-    border-radius: 20px;
-
-    transition: 0.3s;
-}
-
-.card:hover {
-    transform: translateY(-8px);
-
-    border-color: #1597ff;
-}
-
-.icon {
-    width: 60px;
-    height: 60px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    margin-bottom: 20px;
-
-    border-radius: 15px;
-
-    background: rgba(21,151,255,0.1);
-
-    font-size: 30px;
-}
-
-.card h3 {
-    font-size: 22px;
-
-    margin-bottom: 12px;
-}
-
-.card p {
-    color: #8997a8;
-
-    line-height: 1.8;
-}
-
-
-/* =========================
-   PROCESS
-========================= */
-
-.process {
-    display: grid;
-
-    grid-template-columns:
-        repeat(4, 1fr);
-
-    gap: 18px;
-}
-
-.process-card {
-    padding: 25px;
-
-    text-align: center;
-
-    background: #0b1521;
-
-    border: 1px solid #1b2c40;
-
-    border-radius: 18px;
-}
-
-.number {
-    width: 50px;
-    height: 50px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    margin: 0 auto 18px;
-
-    border-radius: 50%;
-
-    background: #1597ff;
-
-    font-weight: bold;
-}
-
-.process-card h3 {
-    margin-bottom: 10px;
-}
-
-.process-card p {
-    color: #8997a8;
-
-    line-height: 1.7;
-}
-
-
-/* =========================
-   PAYMENT
-========================= */
-
-.payment-box {
-    max-width: 900px;
-
-    margin: auto;
-
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
-    gap: 20px;
-}
-
-.payment-card {
-    padding: 30px;
-
-    background: #0b1521;
-
-    border: 1px solid #1b2c40;
-
-    border-radius: 20px;
-
-    transition: 0.3s;
-}
-
-.payment-card:hover {
-    border-color: #1597ff;
-
-    transform: translateY(-5px);
-}
-
-.payment-icon {
-    font-size: 42px;
-
-    margin-bottom: 15px;
-}
-
-.payment-card h3 {
-    margin-bottom: 12px;
-}
-
-.payment-number {
-    margin-top: 18px;
-
-    padding: 15px;
-
-    background: #07101b;
-
-    border-radius: 12px;
-
-    color: #62c3ff;
-
-    font-size: 19px;
-
-    font-weight: bold;
-
-    direction: ltr;
-}
-
-.payment-card p {
-    color: #8997a8;
-
-    line-height: 1.8;
-}
-
-
-/* =========================
-   PRICING
-========================= */
-
-.pricing {
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 22px;
-}
-
-.price-card {
-    padding: 32px;
-
-    background: #0b1521;
-
-    border: 1px solid #1b2c40;
-
-    border-radius: 20px;
-
-    transition: 0.3s;
-}
-
-.price-card:hover {
-    transform: translateY(-6px);
-}
-
-.price-card.featured {
-    border-color: #1597ff;
-
-    box-shadow:
-        0 20px 50px rgba(21,151,255,0.12);
-}
-
-.price-card h3 {
-    font-size: 23px;
-
-    margin-bottom: 15px;
-}
-
-.price {
-    font-size: 36px;
-
-    font-weight: bold;
-
-    margin-bottom: 25px;
-}
-
-.price span {
-    font-size: 14px;
-
-    color: #78869a;
-}
-
-.price-card ul {
-    list-style: none;
-
-    margin-bottom: 25px;
-}
-
-.price-card li {
-    padding: 10px 0;
-
-    color: #9aa7b7;
-
-    border-bottom: 1px solid #172434;
-}
-
-.price-card li::before {
-    content: "✓";
-
-    color: #20c979;
-
-    margin-left: 8px;
-}
-
-.full {
-    width: 100%;
-
-    text-align: center;
-}
-
-
-/* =========================
-   PORTFOLIO
-========================= */
-
-.portfolio {
-    display: grid;
-
-    grid-template-columns:
-        repeat(2, 1fr);
-
-    gap: 22px;
-}
-
-.project {
-    min-height: 280px;
-
-    padding: 30px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: flex-end;
-
-    overflow: hidden;
-
-    border-radius: 20px;
-
-    border: 1px solid #1b2c40;
-
-    background:
-        radial-gradient(
-            circle at top right,
-            rgba(21,151,255,0.28),
-            transparent 45%
-        ),
-        #0b1521;
-
-    transition: 0.3s;
-}
-
-.project:hover {
-    transform: translateY(-7px);
-
-    border-color: #1597ff;
-}
-
-.project-icon {
-    font-size: 55px;
-
-    margin-bottom: 20px;
-}
-
-.project small {
-    color: #62c3ff;
-
-    margin-bottom: 8px;
-}
-
-.project h3 {
-    font-size: 27px;
-
-    margin-bottom: 8px;
-}
-
-.project p {
-    color: #aab5c3;
-
-    margin-bottom: 18px;
-}
-
-.project-link {
-    color: #1597ff;
-
-    font-weight: bold;
-}
-
-
-/* =========================
-   WHY US
-========================= */
-
-.why {
-    display: grid;
-
-    grid-template-columns:
-        repeat(3, 1fr);
-
-    gap: 22px;
-}
-
-.why-card {
-    padding: 28px;
-
-    background: #0b1521;
-
-    border: 1px solid #1b2c40;
-
-    border-radius: 18px;
-}
-
-.why-card h3 {
-    margin-bottom: 12px;
-}
-
-.why-card p {
-    color: #8997a8;
-
-    line-height: 1.8;
-}
-
-
-/* =========================
-   CONTACT
-========================= */
-
-.contact-area {
-    display: grid;
-
-    grid-template-columns:
-        1fr 1.2fr;
-
-    gap: 25px;
-}
-
-.contact-box {
-    padding: 30px;
-
-    background: #0b1521;
-
-    border: 1px solid #1b2c40;
-
-    border-radius: 20px;
-}
-
-.contact-box h3 {
-    font-size: 28px;
-
-    margin-bottom: 15px;
-}
-
-.contact-box > p {
-    color: #8997a8;
-
-    line-height: 1.8;
-
-    margin-bottom: 25px;
-}
-
-.contact-item {
-    padding: 16px;
-
-    margin-top: 12px;
-
-    background: #0e1a28;
-
-    border-radius: 12px;
-
-    color: #b7c2d0;
-}
-
-.contact-item strong {
-    color: white;
-}
-
-
-/* =========================
-   FORM
-========================= */
-
-.form-group {
-    margin-bottom: 16px;
-}
-
-.form-group label {
-    display: block;
-
-    margin-bottom: 8px;
-
-    color: #c8d2df;
-
-    font-size: 14px;
-}
-
-.form-control {
-    width: 100%;
-
-    padding: 14px 16px;
-
-    background: #07101b;
-
-    color: white;
-
-    border: 1px solid #213247;
-
-    border-radius: 11px;
-
-    outline: none;
-
-    transition: 0.3s;
-}
-
-.form-control:focus {
-    border-color: #1597ff;
-
-    box-shadow:
-        0 0 0 3px rgba(21,151,255,0.08);
-}
-
-textarea.form-control {
-    min-height: 130px;
-
-    resize: vertical;
-}
-
-select.form-control {
-    cursor: pointer;
-}
-
-.submit {
-    width: 100%;
-
-    border: none;
-
-    margin-top: 5px;
-}
-
-
-/* =========================
-   WHATSAPP FLOAT
-========================= */
-
-.whatsapp {
-    position: fixed;
-
-    left: 20px;
-    bottom: 20px;
-
-    width: 58px;
-    height: 58px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    background: #20c979;
-
-    border-radius: 50%;
-
-    font-size: 28px;
-
-    box-shadow:
-        0 10px 30px rgba(0,0,0,0.35);
-
-    z-index: 999;
-
-    transition: 0.3s;
-}
-
-.whatsapp:hover {
-    transform: scale(1.08);
-}
-
-
-/* =========================
-   FOOTER
-========================= */
-
-footer {
-    padding: 35px 0;
-
-    text-align: center;
-
-    background: #03060b;
-
-    border-top: 1px solid #17263a;
-
-    color: #6f7e91;
-}
-
-footer strong {
-    color: white
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Webnex | تصميم وتطوير المواقع</title>
+    <meta name="description" content="Webnex لتصميم وتطوير المواقع الإلكترونية والمتاجر والصفحات الاحترافية.">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #070b14;
+            color: #ffffff;
+            line-height: 1.7;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(7, 11, 20, 0.95);
+            border-bottom: 1px solid #182235;
+        }
+
+        nav {
+            min-height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4da3ff;
+        }
+
+        .logo span {
+            color: #ffffff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #c8d1df;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #4da3ff;
+        }
+
+        .menu-btn {
+            display: none;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .hero {
+            min-height: 88vh;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            background:
+                radial-gradient(circle at top right, #12325a 0, transparent 35%),
+                radial-gradient(circle at bottom left, #102544 0, transparent 35%);
+        }
+
+        .hero-content {
+            max-width: 850px;
+            margin: auto;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 8px 18px;
+            border: 1px solid #244b78;
+            border-radius: 30px;
+            color: #72b7ff;
+            background: #0b1728;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(40px, 7vw, 75px);
+            line-height: 1.1;
+            margin-bottom: 25px;
+        }
+
+        .hero h1 span {
+            color: #4da3ff;
+        }
+
+        .hero p {
+            color: #aeb9c9;
+            font-size: 19px;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 13px 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-primary {
+            background: #1683ff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #006ddd;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            border: 1px solid #2a3b53;
+            background: #0d1421;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            border-color: #4da3ff;
+        }
+
+        section {
+            padding: 85px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 45px;
+        }
+
+        .section-title h2 {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        .section-title p {
+            color: #9da9ba;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            background: #0c1320;
+            border: 1px solid #1b2a3f;
+            border-radius: 18px;
+            padding: 30px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-7px);
+            border-color: #347ec2;
+        }
+
+        .icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+
+        .card p {
+            color: #9da9ba;
+        }
+
+        .process {
+            background: #090f1a;
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 25px;
+        }
+
+        .number {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            background: #1683ff;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .step p {
+            color: #9da9ba;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .portfolio-item {
+            min-height: 230px;
+            border-radius: 18px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            background: linear-gradient(135deg, #10243c, #0b111c);
+            border: 1px solid #1d3148;
+        }
+
+        .portfolio-item p {
+            color: #aab5c4;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .price-card {
+            background: #0c1320;
+            border: 1px solid #1b2a3f;
+            border-radius: 18px;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .price {
+            font-size: 32px;
+            color: #4da3ff;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .price-card ul {
+            list-style: none;
+            color: #aeb9c9;
+            margin-bottom: 25px;
+        }
+
+        .price-card li {
+            margin: 8px 0;
+        }
+
+        .payment-box {
+            max-width: 750px;
+            margin: auto;
+            background: #0c1320;
+            border: 1px solid #1b2a3f;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+        }
+
+        .payment-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4da3ff;
+            margin: 15px 0;
+            direction: ltr;
+        }
+
+        .contact {
+            background: #090f1a;
+        }
+
+        form {
+            max-width: 750px;
+            margin: auto;
+            background: #0c1320;
+            border: 1px solid #1b2a3f;
+            padding: 30px;
+            border-radius: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            color: #dce5f0;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #263850;
+            background: #080e18;
+            color: white;
+            outline: none;
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #1683ff;
+        }
+
+        textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        footer {
+            padding: 30px 0;
+            text-align: center;
+            color: #7f8da0;
+            border-top: 1px solid #182235;
+        }
+
+        .whatsapp {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #25d366;
+            color: white;
+            font-size: 28px;
+            z-index: 999;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+        }
+
+        @media (max-width: 800px) {
+            .menu-btn {
+                display: block;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 75px;
+                right: 0;
+                width: 100%;
+                padding: 20px;
+                background: #080e18;
+                flex-direction: column;
+                text-align: center;
+                border-bottom: 1px solid #182235;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .services-grid,
+            .portfolio-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            section {
+                padding: 65px 0;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .process-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .payment-number {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="container">
+        <nav>
+            <a href="#" class="logo">Web<span>nex</span></a>
+
+            <div class="menu-btn" onclick="toggleMenu()">☰</div>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#services">الخدمات</a></li>
+                <li><a href="#process">طريقة العمل</a></li>
+                <li><a href="#portfolio">أعمالنا</a></li>
+                <li><a href="#pricing">الأسعار</a></li>
+                <li><a href="#contact">تواصل معنا</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+
+            <div class="badge">حلول رقمية احترافية</div>
+
+            <h1>
+                خلّي مشروعك يبدأ<br>
+                مع <span>Webnex</span>
+            </h1>
+
+            <p>
+                نصمم ونطور مواقع إلكترونية احترافية وسريعة ومتجاوبة
+                تساعدك على تقديم مشروعك بشكل أفضل على الإنترنت.
+            </p>
+
+            <div class="buttons">
+                <a href="#contact" class="btn btn-primary">ابدأ مشروعك الآن</a>
+                <a href="#services" class="btn btn-secondary">اكتشف خدماتنا</a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section id="services">
+    <div class="container">
+
+        <div class="section-title">
+            <h2>خدماتنا</h2>
+            <p>كل ما تحتاجه لبناء حضور احترافي على الإنترنت</p>
+        </div>
+
+        <div class="services-grid">
+
+            <div class="card">
+                <div class="icon">🌐</div>
+                <h3>تصميم المواقع</h3>
+                <p>تصميم مواقع عصرية ومتجاوبة مع جميع أحجام الشاشات.</p>
+            </div>
+
+            <div class="card">
+                <div class="icon">🛒</div>
+                <h3>المتاجر الإلكترونية</h3>
+                <p>إنشاء متجر إلكتروني لعرض منتجاتك وخدماتك بطريقة احترافية.</p>
+            </div>
+
+            <div class="card">
+                <div class="icon">🚀</div>
+                <h3>Landing Pages</h3>
+                <p>صفحات هبوط مصممة لتحويل الزوار إلى عملاء.</p>
+            </div>
+
+            <div class="card">
+                <div class="icon">💻</div>
+                <h3>تطوير المواقع</h3>
+                <p>برمجة وتطوير مواقع تناسب احتياجات مشروعك.</p>
+            </div>
+
+            <div class="card">
+                <div class="icon">🎨</div>
+                <h3>UI / UX</h3>
+                <p>واجهات سهلة الاستخدام وتجربة مستخدم واضحة ومريحة.</p>
+            </div>
+
+            <div class="card">
+                <div class="icon">🛠️</div>
+                <h3>الصيانة والتطوير</h3>
+                <p>تحديث موقعك وإضافة المميزات الجديدة عند الحاجة.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="process" id="process">
+    <div class="container">
+
+        <div class="section-title">
+            <h2>طريقة العمل</h2>
+            <p>من الفكرة إلى الموقع النهائي</p>
+        </div>
+
+        <div class="process-grid">
+
+            <div class="step">
+                <div class="number">1</div>
+                <h3>نتعرف على فكرتك</h3>
+                <p>نعرف احتياجات مشروعك والمميزات المطلوبة.</p>
+            </div>
+
+            <div class="step">
+                <div class="number">2</div>
+                <h3>التصميم</h3>
+                <p>نجهز شكل الموقع وتجربة المستخدم.</p>
+            </div>
+
+            <div class="step">
+                <div class="number">3</div>
+                <h3>البرمجة</h3>
+                <p>نحوّل التصميم إلى موقع يعمل بشكل فعلي.</p>
+            </div>
+
+            <div class="step">
+                <div class="number">4</div>
+                <h3>الإطلاق</h3>
+                <p>نجهز الموقع للنشر على الإنترنت.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section id="portfolio">
+    <div class="container">
+
+        <div class="section-title">
+            <h2>نماذج من أعمالنا</h2>
+            <p>أفكار لمشاريع يمكن تنفيذها باستخدام Webnex</p>
+        </div>
+
+        <div class="portfolio-grid">
+
+            <div class="portfolio-item">
+                <h3>متجر إلكتروني</h3>
+                <p>واجهة حديثة لعرض المنتجات واستقبال الطلبات.</p>
+            </div>
+
+            <div class="portfolio-item">
+                <h3>موقع شركة</h3>
+                <p>موقع احترافي لعرض الخدمات والمعلومات الخاصة بالشركة.</p>
+            </div>
+
+            <div class="portfolio-item">
+                <h3>Landing Page</h3>
+                <p>صفحة تسويقية لعرض منتج أو خدمة بشكل جذاب.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section id="pricing">
+    <div class="container">
+
+        <div class="section-title">
+            <h2>الباقات</h2>
+            <p>اختر الباقة المناسبة لمشروعك</p>
+        </div>
+
+        <div class="pricing-grid">
+
+            <div class="price-card">
+                <h3>Starter</h3>
+                <div class="price">من 1,500 ج.م</div>
+
+                <ul>
+                    <li>✔ موقع بسيط</li>
+                    <li>✔ تصميم متجاوب</li>
+                    <li>✔ صفحات أساسية</li>
+                    <li>✔ زر WhatsApp</li>
+                </ul>
+
+                <a href="#contact" class="btn btn-primary">اطلب الآن</a>
+            </div>
+
+            <div class="price-card">
+                <h3>Business</h3>
+                <div class="price">من 3,000 ج.م</div>
+
+                <ul>
+                    <li>✔ موقع احترافي</li>
+                    <li>✔ تصميم متطور</li>
+                    <li>✔ نموذج تواصل</li>
+                    <li>✔ تحسين للموبايل</li>
+                </ul>
+
+                <a href="#contact" class="btn btn-primary">اطلب الآن</a>
+            </div>
+
+            <div class="price-card">
+                <h3>Premium</h3>
+                <div class="price">حسب المشروع</div>
+
+                <ul>
+                    <li>✔ مشروع مخصص</li>
+                    <li>✔ مميزات متقدمة</li>
+                    <li>✔ تطوير كامل</li>
+                    <li>✔ دعم وتعديلات</li>
+                </ul>
+
+                <a href="#contact" class="btn btn-primary">تواصل معنا</a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="container">
+
+        <div class="section-title">
+            <h2>طرق الدفع</h2>
+            <p>يمكنك إرسال المبلغ من خلال طرق الدفع المتاحة</p>
+        </div>
+
+        <div class="payment-box">
+
+            <h3>Vodafone Cash / InstaPay</h3>
+
+            <div class="payment-number">
+                01034859496
+            </div>
+
+            <p>
+                بعد التحويل، احتفظ بإثبات الدفع وأرسله لنا عبر WhatsApp.
+            </p>
+
+        </div>
+
+    </div>
+</section>
+
+<section class="contact" id="contact">
+    <div class="container">
+
+        <div class="section-title">
+            <h2>ابدأ مشروعك</h2>
+            <p>املأ البيانات وسنتواصل معك عبر WhatsApp</p>
+        </div>
+
+        <form action="/contact" method="POST">
+
+            <div class="form-group">
+                <label>الاسم</label>
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="اكتب اسمك"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>الخدمة المطلوبة</label>
+
+                <select name="service" required>
+                    <option value="">اختر الخدمة</option>
+                    <option value="تصميم موقع">تصميم موقع</option>
+                    <option value="متجر إلكتروني">متجر إلكتروني</option>
+                    <option value="Landing Page">Landing Page</option>
+                    <option value="تطوير موقع">تطوير موقع</option>
+                    <option value="UI UX">UI / UX</option>
+                    <option value="صيانة وتطوير">صيانة وتطوير</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>الميزانية المتوقعة</label>
+
+                <select name="budget">
+                    <option value="">اختر الميزانية</option>
+                    <option value="أقل من 1500 جنيه">أقل من 1500 جنيه</option>
+                    <option value="1500 - 3000 جنيه">1500 - 3000 جنيه</option>
+                    <option value="3000 - 5000 جنيه">3000 - 5000 جنيه</option>
+                    <option value="أكثر من 5000 جنيه">أكثر من 5000 جنيه</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>طريقة الدفع</label>
+
+                <select name="payment">
+                    <option value="">اختر طريقة الدفع</option>
+                    <option value="Vodafone Cash">Vodafone Cash</option>
+                    <option value="InstaPay">InstaPay</option>
+                </select>
+            </div>
